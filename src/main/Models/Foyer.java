@@ -5,46 +5,45 @@ import java.util.List;
 import java.util.concurrent.Semaphore;
 
 public class Foyer {
-    public int foyerSize = 0;
-    public Semaphore slots;
-    public ArrayList<Customer> customers = new ArrayList<>();
+    private int foyerSize;
+    private Semaphore slots;
+    private ArrayList<Customer> customers = new ArrayList<>();
 
     ////
 
     TicketBooth ticketBooth1;
     TicketBooth ticketBooth2;
-    TicketMechine ticketMechine;
+    TicketMachine ticketMachine;
 
     WaitingArea waitingArea1;
     WaitingArea waitingArea2;
     WaitingArea waitingArea3;
 
 
-    public Foyer(int foyerSize){
+    public Foyer(int foyerSize) {
         this.foyerSize = foyerSize;
         slots = new Semaphore(foyerSize);
 
         ticketBooth1 = new TicketBooth(1);
         ticketBooth2 = new TicketBooth(2);
-        ticketMechine = new TicketMechine(1);
+        ticketMachine = new TicketMachine(1);
 
 
-        waitingArea1 = new WaitingArea(1,12);
-        waitingArea2 = new WaitingArea(2,12);
-        waitingArea3 = new WaitingArea(3,12);
-
+        waitingArea1 = new WaitingArea(1, 12);
+        waitingArea2 = new WaitingArea(2, 12);
+        waitingArea3 = new WaitingArea(3, 12);
 
 
     }
 
-    public void enter(Customer customer){
-        System.out.println("Customer [" + customer.ID + "] is trying to enter..");
-        if (slots.availablePermits() <= foyerSize - foyerSize * 0.80){
+    public void enter(Customer customer) {
+        System.out.println("Customer [" + customer.ID + "] is trying to enter..the building");
+        if (slots.availablePermits() <= foyerSize - foyerSize * 0.80) {
             try {
-                System.out.println("Customer [" + customer.ID + "] is going to wait..");
-               synchronized (customer) {
-                   customer.wait();
-               }
+                System.out.println("Customer [" + customer.ID + "] is going to wait.. because the maximum capacity reached");
+                synchronized (customer) {
+                    customer.wait();
+                }
                 System.out.println("Customer [" + customer.ID + "] is proceeding to enter..");
 
             } catch (InterruptedException e) {
@@ -53,7 +52,7 @@ public class Foyer {
         }
         try {
             slots.acquire();
-            System.out.println("Customer [" + customer.ID + "] did enter the building.. available permits ["+slots.availablePermits()+"]");
+            System.out.println("Customer [" + customer.ID + "] did enter the building.. available permits [" + slots.availablePermits() + "]");
             customers.add(customer);
             synchronized (customer) {
                 customer.notifyAll();
@@ -63,14 +62,15 @@ public class Foyer {
         }
     }
 
-    public void exit(Customer customer){
+    public void exit(Customer customer) {
         slots.release();
         customers.remove(customer);
         System.out.println("Customer [" + customer.ID + "] did leave the foyer..");
     }
 
-    public ArrayList<WaitingArea> getWaitingAreas(){
-        return new ArrayList<>(List.of(this.waitingArea1,this.waitingArea2,this.waitingArea3));
+    public ArrayList<WaitingArea> getWaitingAreas() {
+
+        return new ArrayList<>(List.of(this.waitingArea1, this.waitingArea2, this.waitingArea3));
     }
 
 }

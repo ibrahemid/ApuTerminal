@@ -4,12 +4,11 @@ import main.Models.Customer;
 import main.Models.Foyer;
 
 import java.util.Random;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class CustomersGenerationThread extends Thread{
-    Foyer foyer;
+    private Foyer foyer;
     public CustomersGenerationThread(Foyer foyer){
         this.foyer = foyer;
     }
@@ -19,9 +18,8 @@ public class CustomersGenerationThread extends Thread{
         ExecutorService executorService = Executors.newFixedThreadPool(150);
         while (true){
             executorService.submit(new Customer(counter++,foyer));
-
             try {
-                Thread.sleep((new Random().nextInt(4) + 1) * 1000);
+                Thread.sleep((new Random().nextInt(4) + 1) * 1000); //customer generation rate in millisecond[? 1-2-3-4 ? sec]
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

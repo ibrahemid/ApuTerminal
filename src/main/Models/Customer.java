@@ -3,14 +3,14 @@ package main.Models;
 import java.util.Random;
 
 public class Customer extends Thread {
-   public int ID;
-   public Foyer foyer;
-   public Ticket ticket;
+    public int ID;
+    private Foyer foyer;
+    public Ticket ticket;
 
-   public Customer(int ID,Foyer foyer){
-       this.ID = ID;
-       this.foyer = foyer;
-   }
+    public Customer(int ID, Foyer foyer) {
+        this.ID = ID;
+        this.foyer = foyer;
+    }
 
     @Override
     public void run() {
@@ -18,53 +18,51 @@ public class Customer extends Thread {
 
         this.foyer.enter(this);
 
-        int ticketPurchaseDicision = new Random().nextInt(3);
+        int ticketPurchaseDicision = new Random().nextInt(3); //range
 
-        TicketGenerator ticketGenerator;
+        TicketGenerator ticketGenerator; //
 
-        if (ticketPurchaseDicision == 0){
+        if (ticketPurchaseDicision == 0) {
             ticketGenerator = this.foyer.ticketBooth1;
-        }else if (ticketPurchaseDicision == 1){
+        } else if (ticketPurchaseDicision == 1) {
             ticketGenerator = this.foyer.ticketBooth2;
-        }else{
-            ticketGenerator = this.foyer.ticketMechine;
+        } else {
+            ticketGenerator = this.foyer.ticketMachine;
         }
 
         try {
-            this.sleep(1000);
+            sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        this.ticket = ticketGenerator.takeTicket(this);
+        this.ticket = ticketGenerator.takeTicket(this); //abstraction
 
         WaitingArea waitingArea = null;
-        if (this.ticket.waitingAreaNumber == 1){
+        if (this.ticket.waitingAreaNumber == 1) {
             waitingArea = this.foyer.waitingArea1;
-        }else if (this.ticket.waitingAreaNumber == 2){
+        } else if (this.ticket.waitingAreaNumber == 2) {
             waitingArea = this.foyer.waitingArea2;
-        }else{
+        } else {
             waitingArea = this.foyer.waitingArea3;
         }
 
-        waitingArea.enter(this);
 
+        synchronized (this) { //customer
+            waitingArea.enter(this);
+            System.out.println("Customer Entered waiting Area " + this.ticket.waitingAreaNumber);
 
-        synchronized (this){
             try {
                 this.wait();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+
+            waitingArea.exit(this);
+            this.foyer.exit(this);
+
+            waitingArea.bus.enter(this);
         }
-
-
-
-        waitingArea.exit(this);
-
-        waitingArea.bus.enter(this);
-
-        this.foyer.exit(this);
 
 
     }

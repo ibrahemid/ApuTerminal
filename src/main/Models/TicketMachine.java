@@ -3,34 +3,34 @@ package main.Models;
 import java.util.Random;
 import java.util.concurrent.Semaphore;
 
-public class TicketMechine implements TicketGenerator{
+public class TicketMachine implements TicketGenerator {
     public int ID;
     public Semaphore slots = new Semaphore(1);
 
-    public TicketMechine(int ID){
+    public TicketMachine(int ID) {
         this.ID = ID;
     }
+
     @Override
     public synchronized Ticket takeTicket(Customer customer) {
-        System.out.println("Customer ["+customer.ID+"] is attempting to take a ticket from ticket machine");
+        System.out.println("Customer [" + customer.ID + "] is attempting to take a ticket from ticket machine");
         boolean isBusy = new Random().nextBoolean();
 
-        if (slots.availablePermits() != 1){
-            synchronized (customer){
+        if (slots.availablePermits() != 1) {
+            synchronized (customer) {
                 try {
-                    System.out.println("Customer ["+customer.ID+"] is going to wait because the machine is acquired by somebody else");
-                    synchronized (customer) {
-                        customer.wait();
-                    }
+                    System.out.println("Customer [" + customer.ID + "] is going to wait because the machine is acquired by somebody else");
+
+                    customer.wait();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
         }
 
-        if (isBusy){
+        if (isBusy) {
             try {
-                System.out.println("Customer ["+customer.ID+"] is going to wait because machine is out of service currently");
+                System.out.println("Customer [" + customer.ID + "] is going to wait because machine is out of service currently");
                 synchronized (customer) {
                     customer.wait(1000);
                 }
@@ -40,13 +40,13 @@ public class TicketMechine implements TicketGenerator{
         }
         try {
             slots.acquire();
-            System.out.println("Customer ["+customer.ID+"] acquired the machine");
+            System.out.println("Customer [" + customer.ID + "] acquired the machine");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
         Ticket ticket = new Ticket();
-        System.out.println("New Ticket ["+ticket+"] Generated For ["+customer.ID+"] to Room [" +ticket.waitingAreaNumber +"] ");
+        System.out.println("New Ticket [" + ticket + "] Generated For [" + customer.ID + "] to Room [" + ticket.waitingAreaNumber + "] ");
 
 
         slots.release();
