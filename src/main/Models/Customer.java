@@ -31,14 +31,14 @@ public class Customer extends Thread {
         }
 
         try {
-            sleep(1000);
+            sleep(1000);//this to indicate the time of processing spent by the customer inside the foyer
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
         this.ticket = ticketGenerator.takeTicket(this); //abstraction
 
-        WaitingArea waitingArea = null;
+        WaitingArea waitingArea;
         if (this.ticket.waitingAreaNumber == 1) {
             waitingArea = this.foyer.waitingArea1;
         } else if (this.ticket.waitingAreaNumber == 2) {
@@ -50,10 +50,13 @@ public class Customer extends Thread {
 
         synchronized (this) { //customer
             waitingArea.enter(this);
-            System.out.println("Customer Entered waiting Area " + this.ticket.waitingAreaNumber);
+            System.out.println("Customer " + this.ID + " Entered waiting Area " + this.ticket.waitingAreaNumber + " slots available " + waitingArea.slots.availablePermits());
 
             try {
-                this.wait();
+                //increase this with the customer generation rate
+                // to check how waiting area will
+                // handle the overflow of customer
+                this.wait(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

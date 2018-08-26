@@ -6,7 +6,7 @@ public class TicketScanner {
         System.out.println("Customer [" + customer.ID + "] is scanning the ticket with scanner in waiting area [" + waitingArea.ID + "]..");
         boolean result = waitingArea.ID == customer.ticket.waitingAreaNumber;
         if (result) {
-            System.out.println("Customer [" + customer.ID + "] ticket's [" + customer.ticket + "] is valid proceed to room [" + waitingArea.ID + "]..");
+            System.out.println("Customer [" + customer.ID + "] ticket's [" + customer.ticket + "] is valid proceed to waiting area [" + waitingArea.ID + "]..");
         }
         return result;
     }

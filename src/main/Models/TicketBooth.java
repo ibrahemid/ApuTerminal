@@ -29,7 +29,7 @@ public class TicketBooth implements TicketGenerator {
 
         if (isBusy) {
             try {
-                System.out.println("Customer [" + customer.ID + "] is going to wait because booth employer is busy currently");
+                System.out.println("Customer [" + customer.ID + "] is going to wait because the employer in Booth " + this.ID + " is busy currently");
                 synchronized (customer) {
                     customer.wait(1000);
                 }

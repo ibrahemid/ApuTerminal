@@ -5,7 +5,7 @@ import java.util.concurrent.Semaphore;
 
 public class TicketMachine implements TicketGenerator {
     public int ID;
-    public Semaphore slots = new Semaphore(1);
+    public Semaphore slots = new Semaphore(1); // one ticket each
 
     public TicketMachine(int ID) {
         this.ID = ID;
@@ -14,7 +14,7 @@ public class TicketMachine implements TicketGenerator {
     @Override
     public synchronized Ticket takeTicket(Customer customer) {
         System.out.println("Customer [" + customer.ID + "] is attempting to take a ticket from ticket machine");
-        boolean isBusy = new Random().nextBoolean();
+        boolean isOutOfService = new Random().nextBoolean();
 
         if (slots.availablePermits() != 1) {
             synchronized (customer) {
@@ -28,7 +28,7 @@ public class TicketMachine implements TicketGenerator {
             }
         }
 
-        if (isBusy) {
+        if (isOutOfService) {
             try {
                 System.out.println("Customer [" + customer.ID + "] is going to wait because machine is out of service currently");
                 synchronized (customer) {
@@ -53,9 +53,5 @@ public class TicketMachine implements TicketGenerator {
         return ticket;
     }
 
-    //payForTicket and printTicket
-
-//    synchronized  boolean payForTicket (int cusID){
-//    }
 
 }

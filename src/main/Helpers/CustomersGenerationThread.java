@@ -19,10 +19,14 @@ public class CustomersGenerationThread extends Thread{
         while (true){
             executorService.submit(new Customer(counter++,foyer));
             try {
-                Thread.sleep((new Random().nextInt(4) + 1) * 1000); //customer generation rate in millisecond[? 1-2-3-4 ? sec]
+                //customer generation rate in millisecond[? 1-2-3-4 ? sec]
+                // for testing purposes, manipulate the last parameter to accelerate the generation.
+                Thread.sleep((new Random().nextInt(4) + 1) * 100/*rate*/);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
     }
 }
+
+

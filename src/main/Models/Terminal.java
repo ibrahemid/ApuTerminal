@@ -85,9 +85,12 @@ public class Terminal extends Thread {
         System.out.println("Bus [" + bus.ID + "] did leave the terminal, available permits = " + this.busesSlots.availablePermits());
 
         if (queue.size() != 0) {
-            Bus busToBeNotified = queue.poll();
+            Bus busToBeNotified = queue.peek();
+            queue.remove(busToBeNotified);
+
             synchronized (busToBeNotified) {
                 busToBeNotified.notify();
+
             }
         } else {
             synchronized (bus) {
@@ -103,7 +106,6 @@ public class Terminal extends Thread {
      */
     private BusType getBusType() {
         return (new Random().nextBoolean()) ? BusType.FAST_BUS : BusType.NORMAL_BUS;
-
     }
 }
 

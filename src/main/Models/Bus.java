@@ -1,6 +1,5 @@
 package main.Models;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.Semaphore;
@@ -70,6 +69,7 @@ public class Bus extends Thread {
     }
 
     public void enter(Customer customer) {
+
         synchronized (customer) {
 
             System.out.println("Customer [" + customer.ID + "] is attempting to enter the bus"); //
@@ -81,7 +81,7 @@ public class Bus extends Thread {
             }
 
             customers.add(customer);
-            System.out.println("Customer [" + customer.ID + "] did enter the bus[ " + this.ID + " ]");
+            System.out.println("Customer [" + customer.ID + "] did enter the bus [" + this.ID + "]");
         }
     }
 
@@ -91,4 +91,3 @@ public class Bus extends Thread {
     }
 }
 
-//4:28 save
